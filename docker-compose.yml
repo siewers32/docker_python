@@ -1,0 +1,32 @@
+services:
+  db:
+    image: mariadb:noble
+    restart: always
+    environment:
+      MARIADB_ROOT_PASSWORD: "secret"
+      MARIADB_DATABASE: "my_database"
+    volumes:
+      - ./db_data:/var/lib/mysql
+      - ./db_init/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "3306:3306"
+
+  app:
+    build: .
+    depends_on:
+      - db
+    tty: true
+    volumes:
+      - ./app:/app
+
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: phpmyadmin
+    ports:
+      - "8080:80"
+    environment:
+      PMA_HOST: db
+      MYSQL_ROOT_PASSWORD: secret
+    depends_on:
+      - db
