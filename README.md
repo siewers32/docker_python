@@ -22,7 +22,7 @@ Er worden 3 containers gestart:
 ## MariaDB
 * In de db_init map staat een init.sql script. Tijdens `docker compose up` wordt dit bestand gekopieerd naar de maria-db server en uitgevoerd.
 * Er worden twee databases aangemaakt (tenzij de databases al bestaan, dan gebeurt er niks) en er wordt een user aangemaakt die je kunt gebruiken met PHPMyAdmin. (pas passwords aan!)
-* In docker-compose.yml wordt een root-user met password gedefinieerd. (pas passwords hier ook aan!)
+* In docker-compose.yml wordt een root-user met password gedefinieerd. (pas passwords hier eventueel ook aan!)
 * Je kunt de database beheren met een mysql-client op je host systeem of je kunt gebruik maken van PHPMyAdmin.
 * Om er voor te zorgen dat alle data niet verloren gaat, worden de data-bestanden opgeslagen in de map db_data op het host-systeem
 * LET OP: De db_data map wordt niet meegenomen in het wegschrijven naar de repository (zie .gitignore). Als je toch een backup wilt bewaren van je database, exporteer dan je databasestructuur inclusief data in een sql-bestand en plaats dat in de hoofdmap van je repository.
@@ -32,3 +32,8 @@ Er worden 3 containers gestart:
 * Ga met je browser naar `http://127.0.0.1:8082`
 * Log in met de root-user en wachtwoord (zie docker-compose.yml)
 * Je kunt ook inloggen met de speciale phpmyadmin_user (zie /db/init.sql)
+
+## Installeren school database
+* Ga naar PHPMyAdmin en log in.
+* Maak een database aan met de naam `school`
+* Importeer het sql-bestand `school.sql`
