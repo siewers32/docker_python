@@ -1,7 +1,9 @@
 FROM python:trixie
 
+RUN useradd -m appuser
+
 # Stel de werkmap in
-WORKDIR /app
+WORKDIR /home/appuser/app
 
 # Kopieer de requirements file en installeer de afhankelijkheden
 COPY ./requirements.txt .

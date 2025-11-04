@@ -1,13 +1,12 @@
 services:
   db:
-    image: mariadb:noble
+    image: mariadb:lts-ubi9
     restart: always
     environment:
       MARIADB_ROOT_PASSWORD: "secret"
       MARIADB_DATABASE: "my_database"
     volumes:
-      - ./db_data:/var/lib/mysql
-      - ./db_init/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - mariadb_data:/var/lib/mysql
     ports:
       - "3306:3306"
 
@@ -17,11 +16,11 @@ services:
       - db
     tty: true
     volumes:
-      - ./app:/app
+      - ./app:/home/appuser/app
 
 
   phpmyadmin:
-    image: phpmyadmin/phpmyadmin:latest
+    image: phpmyadmin:5.2.3-apache
     container_name: phpmyadmin
     ports:
       - "8082:80"
@@ -30,3 +29,7 @@ services:
       MYSQL_ROOT_PASSWORD: secret
     depends_on:
       - db
+
+volumes:
+  mariadb_data:
+    driver: local
