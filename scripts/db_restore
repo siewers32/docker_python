@@ -1,0 +1,35 @@
+#!/bin/bash
+
+# --- Configuratie ---
+SERVICE_NAME="docker_python-db-1"
+BACKUP_DIR="./backup"
+DB_ROOT_PASSWORD="secret"
+# --------------------
+
+# Argumenten check
+if [ -z "$1" ]; then
+    echo "Gebruiksfout: U moet de backup bestandsnaam opgeven (bijv. db_dump_...sql)."
+    exit 1
+fi
+
+BACKUP_FILENAME="$1"
+FULL_BACKUP_PATH="${BACKUP_DIR}/${BACKUP_FILENAME}"
+
+if [ ! -f "$FULL_BACKUP_PATH" ]; then
+    echo "Fout: Backup bestand '$FULL_BACKUP_PATH' niet gevonden."
+    exit 1
+fi
+
+echo "Start herstel van $BACKUP_FILENAME naar service $SERVICE_NAME"
+
+# Gebruik 'docker exec' om de SQL-dump in de container te importeren
+# Het bestand wordt via STDIN naar de mariadb-client gestuurd.
+cat "$FULL_BACKUP_PATH" | docker exec -i "$SERVICE_NAME" \
+    sh -c 'exec mariadb -u root -p"$MARIADB_ROOT_PASSWORD"'
+
+if [ $? -eq 0 ]; then
+    echo "Herstel succesvol voltooid."
+else
+    echo "Fout tijdens het herstellen van de SQL-dump."
+    exit 1
+fi

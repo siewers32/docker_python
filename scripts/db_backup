@@ -1,0 +1,29 @@
+#!/bin/bash
+
+# --- Configuratie ---
+SERVICE_NAME="docker_python-db-1"  # Naam van de MariaDB service in docker-compose.yml
+BACKUP_DIR="./backup"
+TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+BACKUP_FILE="${BACKUP_DIR}/db_dump_${TIMESTAMP}.sql"
+DB_ROOT_PASSWORD="secret" # Vervang door de juiste waarde/omgevingsvariabele
+# --------------------
+
+# Controleer of de backup directory bestaat
+mkdir -p "$BACKUP_DIR"
+
+echo "Start SQL dump van service: $SERVICE_NAME"
+
+# Gebruik 'docker exec' om mariadb-dump in de draaiende container uit te voeren
+# De output wordt via Docker's STDOUT naar de host overgebracht en in het bestand opgeslagen.
+docker exec -i "$SERVICE_NAME" \
+    sh -c 'exec mariadb-dump --all-databases -u root -p"$MARIADB_ROOT_PASSWORD"' \
+    > "$BACKUP_FILE"
+
+# Foutafhandeling
+if [ $? -eq 0 ]; then
+    echo "SQL-dump succesvol voltooid."
+    echo "Bestand: $BACKUP_FILE"
+else
+    echo "Fout tijdens het maken van de SQL-dump."
+    exit 1
+fi

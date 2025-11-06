@@ -1,0 +1,48 @@
+#!/bin/bash
+
+# ----------------------------------------------------------------------
+# Configuratie variabelen
+# ----------------------------------------------------------------------
+VOLUME_NAME="mariadb_data" # De naam van je Docker named volume
+BACKUP_DIR="./backups" # Directory waar de backup bestanden staan
+# ----------------------------------------------------------------------
+
+# Controleer of er een argument is meegegeven
+if [ -z "$1" ]; then
+    echo "❌ Gebruiksfout: U moet de backup bestandsnaam opgeven."
+    echo "Voorbeeld: ./restore_volume.sh mijn_database_data_20251106_093000.tar.gz"
+    exit 1
+fi
+
+# Definieer het volledige pad naar het backup-bestand
+BACKUP_FILENAME="$1"
+FULL_BACKUP_PATH="${BACKUP_DIR}/${BACKUP_FILENAME}"
+
+# Controleer of het backup-bestand bestaat
+if [ ! -f "$FULL_BACKUP_PATH" ]; then
+    echo "❌ Fout: Backup bestand '$FULL_BACKUP_PATH' niet gevonden."
+    echo "Controleer de bestandsnaam en de map $BACKUP_DIR."
+    exit 1
+fi
+
+echo "Start herstel naar volume: $VOLUME_NAME"
+echo "Bronbestand: $FULL_BACKUP_PATH"
+
+# Voer het herstel uit met een tijdelijke busybox container
+# 1. Mount het doelvolume (-v $VOLUME_NAME:/volume)
+# 2. Mount de backup directory (-v $BACKUP_DIR:/backup)
+# 3. Gebruik 'tar' om het bestand uit te pakken in de volume-map
+#    --strip-components 1 is cruciaal om de top-level directory (meestal 'volume/') te verwijderen
+docker run --rm \
+  -v "$VOLUME_NAME":/volume \
+  -v "$BACKUP_DIR":/backup:ro \
+  busybox \
+  tar -xzf "/backup/$(basename "$FULL_BACKUP_PATH")" -C /volume --strip-components 1
+
+# Controleer de exit-status van het docker commando
+if [ $? -eq 0 ]; then
+    echo "Herstel succesvol voltooid naar volume '$VOLUME_NAME'."
+else
+    echo "Fout tijdens het herstellen van de backup."
+    exit 1
+fi

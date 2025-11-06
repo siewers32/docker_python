@@ -1,0 +1,42 @@
+#!/bin/bash
+
+# ----------------------------------------------------------------------
+# Configuratie variabelen
+# Pas deze waarden aan voor jouw specifieke volume en locatie
+# ----------------------------------------------------------------------
+VOLUME_NAME="mariadb_data" # De naam van je Docker named volume
+BACKUP_DIR="./backups" # Directory waar je de backup wilt opslaan
+TIMESTAMP=$(date +%Y%m%d_%H%M%S) # Timestamp voor een unieke bestandsnaam
+BACKUP_FILE="${BACKUP_DIR}/${VOLUME_NAME}_${TIMESTAMP}.tar.gz"
+# ----------------------------------------------------------------------
+
+# Controleer of de backup directory bestaat, zo niet, maak deze aan
+if [ ! -d "$BACKUP_DIR" ]; then
+    echo "Backup directory $BACKUP_DIR bestaat niet. Aanmaken..."
+    mkdir -p "$BACKUP_DIR"
+fi
+
+echo "Start backup van volume: $VOLUME_NAME"
+echo "Backup wordt opgeslagen als: $BACKUP_FILE"
+
+# Voer de backup uit met een tijdelijke busybox container
+# 1. Mount het volume (-v $VOLUME_NAME:/volume)
+# 2. Mount de backup directory (-v $BACKUP_DIR:/backup)
+# 3. Gebruik 'tar' om de inhoud van /volume te comprimeren naar /backup/$BACKUP_FILE
+docker run --rm \
+  -v "$VOLUME_NAME":/volume:ro \
+  -v "$BACKUP_DIR":/backup \
+  busybox \
+  tar -czf "/backup/$(basename "$BACKUP_FILE")" -C /volume .
+
+# Controleer de exit-status van het docker commando
+if [ $? -eq 0 ]; then
+    echo "Backup succesvol voltooid."
+    echo "Grootte: $(du -sh "$BACKUP_FILE" | awk '{print $1}')"
+else
+    echo "Fout tijdens het maken van de backup."
+    exit 1
+fi
+
+# Optioneel: Clean-up (houd bijvoorbeeld 5 laatste backups bij)
+# find "$BACKUP_DIR" -type f -name "${VOLUME_NAME}_*.tar.gz" -mtime +7 -delete
