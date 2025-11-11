@@ -34,3 +34,7 @@ Er worden 3 containers gestart:
 * Ga naar PHPMyAdmin en log in.
 * Maak een database aan met de naam `school`
 * Importeer het sql-bestand `school.sql`
+
+## Backup maken van alle databases
+* Maak een back up met `docker compose run --rm backup`
+* Backups worden niet meegenomen in de synchronisatie naar github.
