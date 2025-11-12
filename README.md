@@ -19,14 +19,13 @@ Er worden 3 containers gestart:
     * Vervolgens kun je scripts starten op de gebruikelijke manier bijv. `python main.py`
 
 ## MariaDB
-* In docker-compose.yml wordt een root-user met password gedefinieerd. (pas passwords hier eventueel ook aan!)
-* Je kunt de database beheren met een mysql-client op je host systeem of je kunt gebruik maken van PHPMyAdmin.
+* In docker-compose.yml is een user `root` met `password` gedefinieerd. (MARIADB_ROOT_PASSWORD)
 
 
 ## PHPMyAdmin
 * Je kunt PHPMyAdmin gebruiken om de database-server (mariadb) te beheren.
 * Ga met je browser naar `http://127.0.0.1:8082`
-* Log in met de root-user en wachtwoord (zie docker-compose.yml)
+* Log in met de root-user en wachtwoord
 * Je kunt ook inloggen met de speciale phpmyadmin_user (zie /db/init.sql)
 
 ## Installeren school database
