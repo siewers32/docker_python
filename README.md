@@ -3,7 +3,6 @@
 ## Installatie
 * Open de hoofmap van de repository in Visual Studio Code (of andere editor)
 * Open een terminal-venster
-* Maak in de hoofdmap van de repository een map aan met de naam `db_data`.
 * Daarna vanuit de hoofdmap installeren met `docker-compose up`
 
 Er worden 3 containers gestart:
