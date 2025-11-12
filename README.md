@@ -32,7 +32,7 @@ Er worden 3 containers gestart:
 ## Installeren school database
 * Ga naar PHPMyAdmin en log in.
 * Maak een database aan met de naam `school`
-* Importeer het sql-bestand `school.sql`
+* Importeer het sql-bestand [school.sql](https://static.edutorial.nl/dbq/school.sql)
 
 ## Backup maken van alle databases
 * Maak een back up met `docker compose run --rm backup`
