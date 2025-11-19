@@ -36,3 +36,5 @@ Er worden 3 containers gestart:
 ## Backup maken van alle databases
 * Maak een back up met `docker compose run --rm backup`
 * Backups worden niet meegenomen in de synchronisatie naar github.
+
+![setup docker_python containers](https://static.edutorial.nl/python/setup_docker.svg)
