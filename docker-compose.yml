@@ -11,25 +11,6 @@ services:
     ports:
       - "3306:3306"
   
-  backup:
-    image: mariadb:lts-ubi9 # Gebruik dezelfde image om mariadb-dump te garanderen
-    profiles: ["backup"] # Maakt de service standaard niet actief
-    volumes:
-      # BELANGRIJK: Mount de lokale host map (met backups) in de container
-      - ./backups:/backups
-    # De command definieert de dump-logica, volledig in de container
-    command: >
-      bash -c "mariadb-dump
-      --host=db
-      --all-databases
-      -u root
-      -p$$MARIADB_ROOT_PASSWORD
-      | gzip > /backups/db_dump_$(date +%Y%m%d_%H%M%S).sql.gz"
-    environment:
-      # Haal het wachtwoord op dezelfde manier op als de db service
-      MARIADB_ROOT_PASSWORD: "secret"
-    depends_on:
-      - db
 
   app:
     build: .

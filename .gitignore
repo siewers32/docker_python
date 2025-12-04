@@ -2,5 +2,5 @@
 .env
 /db_data
 /venv
-/backups
+/backup
 .DS_Store

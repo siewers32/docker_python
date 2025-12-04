@@ -1,9 +1,28 @@
 # Docker images Python met MariaDB
 
+
 ## Installatie
+* Kopieer de url naar deze github-repository (via groene knop op deze pagina!)
+* Open een terminal-venster
+* Gebruik `git clone <url repo>` om de repository vanaf github op je eigen systeem te installeren
 * Open de hoofmap van de repository in Visual Studio Code (of andere editor)
 * Open een terminal-venster
-* Daarna vanuit de hoofdmap installeren met `docker-compose up`
+* Daarna vanuit de hoofdmap installeren met `docker compose up`
+
+## Vooraf aan update
+* Maak een backup van alle databases met `./scripts/db_backup`
+* Maak een backup van de map `app` met al je python-bestanden
+* Maak eventueel een backup van de geïnstalleerde python-modules met `pip freeze > backup_modules.txt`, maak een backup van het bestand `backup_modules.txt`
+* Stop de containers en verwijder volumes met `docker compose down -v`
+
+## Update
+* Voor een update doe je `git pull` om de laatste versie van github te installeren.
+* Gebruik `docker compose up --build` om de containers te opnieuw op te bouwen en te starten.
+
+## Na de update
+* Restore de databases in MariaDB met `./scripts/db_restore <pad naar backup-bestand>`
+* Bouw een connectie op met de python container `docker exec -it -u appuser app_id bash` (gebruik `docker ps` om het app_id op te zoeken)
+* Installeer de modules met `pip install -r backup_modules.txt`
 
 Er worden 3 containers gestart:
 * Python
@@ -21,20 +40,17 @@ Er worden 3 containers gestart:
 ## MariaDB
 * In docker-compose.yml is een user `root` met `password` gedefinieerd. (MARIADB_ROOT_PASSWORD)
 
-
 ## PHPMyAdmin
 * Je kunt PHPMyAdmin gebruiken om de database-server (mariadb) te beheren.
 * Ga met je browser naar `http://127.0.0.1:8082`
 * Log in met de root-user en wachtwoord
 * Je kunt ook inloggen met de speciale phpmyadmin_user (zie /db/init.sql)
 
-## Installeren school database
+## Installeren van een bestaande database
 * Ga naar PHPMyAdmin en log in.
-* Maak een database aan met de naam `school`
-* Importeer het sql-bestand [school.sql](https://static.edutorial.nl/dbq/school.sql)
-
-## Backup maken van alle databases
-* Maak een back up met `docker compose run --rm backup`
-* Backups worden niet meegenomen in de synchronisatie naar github.
+* Maak een database aan en geef die een naam
+* Update de linker kolom met databases en klik op de nieuwe database 
+* Ga naar de SQL-tab in PHPMyAdmin
+* Plak de inhoud van het SQL-bestand en importeer (starten)
 
 ![setup docker_python containers](https://static.edutorial.nl/python/setup_docker.svg)
