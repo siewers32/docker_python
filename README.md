@@ -53,4 +53,4 @@ Er worden 3 containers gestart:
 * Ga naar de SQL-tab in PHPMyAdmin
 * Plak de inhoud van het SQL-bestand en importeer (starten)
 
-![setup docker_python containers](https://static.edutorial.nl/python/setup_docker.svg)
+<img src="https://static.edutorial.nl/python/setup_docker.svg" alt="setup docker_python containers" style="background:white;">
